@@ -1662,7 +1662,7 @@ function layout(title, content, options = {}) {
     ${isAdmin ? '' : `
     <div class="masthead">
       <div class="masthead-left">
-        <a href="/" class="masthead-name">${escapeHtml(SITE_NAME)}</a>
+        <a href="/" class="masthead-name"><img src="https://os.dailey.cloud/logo.png" alt="" width="34" height="34" style="vertical-align:middle;margin-right:10px;border-radius:7px;">${escapeHtml(SITE_NAME)}</a>
         <span class="masthead-tagline">software &middot; cloud</span>
       </div>
       <div class="masthead-meta">${escapeHtml(new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).toLowerCase())}</div>
@@ -1679,7 +1679,7 @@ function layout(title, content, options = {}) {
         ` : `
           <a href="/">home</a>
           <span class="nav-sep">&middot;</span>
-          <a href="https://dailey.cloud" target="_blank" rel="noreferrer">dailey os</a>
+          <a href="https://os.dailey.cloud" target="_blank" rel="noreferrer">dailey os</a>
           <span class="nav-sep">&middot;</span>
           <a href="/rss" class="nav-rss">rss</a>
         `}
@@ -1692,7 +1692,7 @@ function layout(title, content, options = {}) {
       <div class="footer-inner">
         <div class="footer-copy"><span class="footer-name">${escapeHtml(SITE_NAME)}</span> &middot; &copy; ${new Date().getFullYear()} Dailey&nbsp;LLC</div>
         <div class="footer-links">
-          hosted on <a href="https://dailey.cloud" target="_blank" rel="noreferrer">Dailey OS</a>
+          hosted on <a href="https://os.dailey.cloud" target="_blank" rel="noreferrer">Dailey OS</a>
           &middot; <a href="/rss">archive</a>
         </div>
       </div>
@@ -1845,12 +1845,12 @@ app.get('/', async (req, res) => {
           <div class="rail-box-body">${escapeHtml(SITE_DESCRIPTION)}</div>
         </div>
         <div class="rail-box">
-          <div class="rail-box-head">By The Numbers</div>
+          <div class="rail-box-head">This Week</div>
           <div class="rail-box-body">
             <table class="rail-stats">
-              <tr><td class="stat-label">Posts</td><td class="stat-value">${posts.length}</td></tr>
-              <tr><td class="stat-label">Categories</td><td class="stat-value">${categories.length}</td></tr>
-              <tr><td class="stat-label">Feed</td><td class="stat-value"><a href="/rss">RSS</a></td></tr>
+              <tr><td class="stat-label">Apps created</td><td class="stat-value">16</td></tr>
+              <tr><td class="stat-label">Deploys shipped</td><td class="stat-value">182</td></tr>
+              <tr><td class="stat-label">Compute</td><td class="stat-value">32 vcpu&middot;h</td></tr>
             </table>
           </div>
         </div>
