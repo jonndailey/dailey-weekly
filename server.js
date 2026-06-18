@@ -726,6 +726,9 @@ function layout(title, content, options = {}) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${safeTitle} — ${escapeHtml(SITE_NAME)}</title>
   <meta name="description" content="${metaDescription}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <meta property="og:title" content="${safeTitle}">
   <meta property="og:description" content="${metaDescription}">
   <meta property="og:type" content="${escapeHtml(ogType)}">
@@ -760,9 +763,9 @@ function layout(title, content, options = {}) {
       --bevel-light: #cfe0ee;
       --bevel-dark: #cfe0ee;
       --bevel-mid: #0093CB;
-      /* period-accurate fonts */
-      --font-body: Verdana, Geneva, Arial, sans-serif;
-      --font-head: Georgia, 'Times New Roman', serif;
+      /* Poppins primary; mono kept for small retro labels */
+      --font-body: 'Poppins', Verdana, Geneva, Arial, sans-serif;
+      --font-head: 'Poppins', Georgia, 'Times New Roman', serif;
       --font-mono: 'Courier New', Courier, monospace;
     }
 
@@ -1614,6 +1617,9 @@ function layout(title, content, options = {}) {
       .page-grid {
         grid-template-columns: 1fr;
       }
+      /* Content first on mobile; the rail (categories / stats) drops below. */
+      .page-main { order: 0; }
+      .rail { order: 1; }
       .admin-grid {
         grid-template-columns: 1fr;
       }
