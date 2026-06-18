@@ -446,7 +446,14 @@ function renderMarkdown(text) {
     }
   }
 
-  return rendered.join('\n').replace(/<\/ul>\s*<ul>/g, '');
+  return rendered
+    .join('\n')
+    .replace(/<\/ul>\s*<ul>/g, '')
+    // Group consecutive image embeds into a side-by-side row.
+    .replace(
+      /(?:<figure class="embed-block image-embed">.*?<\/figure>\s*){2,}/g,
+      (match) => `<div class="image-row">${match.trim()}</div>`
+    );
 }
 
 function compactHtml(html) {
@@ -1175,7 +1182,7 @@ function layout(title, content, options = {}) {
       color: var(--muted);
     }
     .post-content {
-      font-size: 13px;
+      font-size: 16px;
       color: var(--ink);
     }
     .post-content h1 {
@@ -1196,7 +1203,7 @@ function layout(title, content, options = {}) {
       margin: 22px 0 8px;
       font-family: var(--font-head);
       color: var(--royal);
-      font-size: 16px;
+      font-size: 18px;
       line-height: 1.3;
       font-weight: 700;
     }
@@ -1216,7 +1223,7 @@ function layout(title, content, options = {}) {
       border: 1px solid var(--line);
       color: var(--royal);
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 13.5px;
     }
     .post-content pre {
       margin: 22px 0;
@@ -1288,6 +1295,18 @@ function layout(title, content, options = {}) {
     }
     .image-embed .embed-caption {
       margin-top: 12px;
+    }
+    .image-row {
+      display: flex;
+      gap: 16px;
+      margin: 34px 0;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .image-row .image-embed {
+      flex: 1 1 0;
+      min-width: 240px;
+      margin: 0;
     }
     .post-footer {
       margin-top: 28px;
