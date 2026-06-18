@@ -1751,7 +1751,7 @@ function layout(title, content, options = {}) {
     <div class="masthead">
       <a href="/" class="masthead-name"><span class="masthead-mark"></span>${escapeHtml(SITE_NAME)}</a>
       <div class="masthead-meta">
-        <span class="masthead-tagline">SOFTWARE &middot; CLOUD &middot; MSP</span>
+        <span class="masthead-tagline">SOFTWARE &middot; CLOUD</span>
         <span class="masthead-date">${escapeHtml(new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }))}</span>
       </div>
     </div>
