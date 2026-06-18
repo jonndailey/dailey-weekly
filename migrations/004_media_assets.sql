@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS media_assets (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  original_name VARCHAR(255) NOT NULL,
+  storage_key VARCHAR(512) NOT NULL UNIQUE,
+  mime_type VARCHAR(255) NOT NULL,
+  size_bytes BIGINT UNSIGNED NOT NULL,
+  kind ENUM('image', 'video', 'file') NOT NULL DEFAULT 'file',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

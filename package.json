@@ -1,0 +1,20 @@
+{
+  "name": "dailey-template-blog",
+  "version": "1.0.0",
+  "description": "Full blog engine with admin panel, markdown, categories, and RSS",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node --env-file=.env server.js",
+    "dev:db": "docker compose up -d db",
+    "dev:db:down": "docker compose down",
+    "start": "node server.js",
+    "migrate": "node --env-file=.env migrate.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.500.0",
+    "@aws-sdk/s3-request-presigner": "^3.500.0",
+    "express": "^4.18.2",
+    "multer": "^2.0.2",
+    "mysql2": "^3.6.0"
+  }
+}

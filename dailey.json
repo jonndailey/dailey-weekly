@@ -1,0 +1,13 @@
+{
+  "name": "Blog",
+  "description": "Full blog engine with admin panel, markdown, categories, and RSS",
+  "icon": "edit",
+  "category": "content",
+  "services": { "database": true, "storage": true, "auth": false },
+  "repo": "https://github.com/jonndailey/dailey-template-blog.git",
+  "branch": "main",
+  "env": {
+    "ADMIN_PASSWORD": { "autoGenerate": true, "length": 24, "label": "Admin login password" },
+    "ADMIN_SESSION_SECRET": { "autoGenerate": true, "length": 48, "label": "Admin session signing secret" }
+  }
+}
