@@ -1874,16 +1874,6 @@ app.get('/', async (req, res) => {
           <div class="rail-box-head">In This Blog</div>
           <div class="rail-box-body">${escapeHtml(SITE_DESCRIPTION)}</div>
         </div>
-        <div class="rail-box">
-          <div class="rail-box-head">This Week</div>
-          <div class="rail-box-body">
-            <table class="rail-stats">
-              <tr><td class="stat-label">Apps created</td><td class="stat-value">16</td></tr>
-              <tr><td class="stat-label">Deploys shipped</td><td class="stat-value">182</td></tr>
-              <tr><td class="stat-label">Compute</td><td class="stat-value">32 vcpu&middot;h</td></tr>
-            </table>
-          </div>
-        </div>
       </aside>`;
 
     const featuredHtml = featuredPost ? renderFeaturedPost(featuredPost) : '';
