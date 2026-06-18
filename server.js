@@ -87,6 +87,11 @@ function getStorageClient() {
       credentials: {
         accessKeyId: process.env.S3_ACCESS_KEY_ID,
         secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+        // Dailey OS injects temporary credentials; the session token is
+        // required or presigned URLs fail with SignatureDoesNotMatch.
+        ...(process.env.S3_SESSION_TOKEN
+          ? { sessionToken: process.env.S3_SESSION_TOKEN }
+          : {}),
       },
       forcePathStyle: true,
     });
