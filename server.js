@@ -437,7 +437,7 @@ function renderMarkdown(text) {
       trimmed.startsWith('<li') ||
       trimmed.startsWith('<blockquote') ||
       trimmed.startsWith('<div class="embed-block"') ||
-      trimmed.startsWith('<figure class="embed-block"') ||
+      trimmed.startsWith('<figure') ||
       trimmed.startsWith('</')
     ) {
       rendered.push(trimmed);
