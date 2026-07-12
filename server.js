@@ -667,9 +667,7 @@ function getCategoryColor(slug) {
 function renderCategoryPill(name, slug) {
   if (!name) return '';
   const color = getCategoryColor(slug);
-  return `<span class="category-pill" style="background:${color.bg};color:${color.text};border-color:${color.border};">${escapeHtml(
-    name
-  )}</span>`;
+  return `<span class="chip" style="background:${color.bg};color:${color.text};">${escapeHtml(name)}</span>`;
 }
 
 function renderTagList(tags) {
@@ -692,39 +690,32 @@ function renderMeta(post) {
 
 function renderFeaturedPost(post) {
   const tags = parseTags(post.tags);
-
   return `
-    <article class="featured-post">
-      <div class="featured-label">Featured Story</div>
-      ${renderCategoryPill(post.category_name, post.category_slug)}
-      <h2><a href="/post/${escapeHtml(post.slug)}">${escapeHtml(post.title)}</a></h2>
-      ${renderMeta(post)}
-      <p class="featured-summary">${escapeHtml(post.excerpt || SITE_DESCRIPTION)}</p>
-      <div class="post-footer-bar">
-        ${renderTagList(tags)}
-        <a href="/post/${escapeHtml(post.slug)}" class="row-arrow">Read story</a>
+    <section class="window">
+      <div class="titlebar"><div class="box" aria-hidden="true"></div><div class="ttl"><span>Featured</span></div><div class="box collapse" aria-hidden="true"></div></div>
+      <div class="win-body">
+        <article class="doc">
+          <div class="meta">${renderCategoryPill(post.category_name, post.category_slug)} <b>${escapeHtml(formatDate(post.published_at || post.created_at))}</b> &middot; ${escapeHtml(readingTime(post.content))}</div>
+          <h1><a href="/post/${escapeHtml(post.slug)}" style="color:inherit;text-decoration:none;">${escapeHtml(post.title)}</a></h1>
+          <p>${escapeHtml(post.excerpt || SITE_DESCRIPTION)}</p>
+          ${renderTagList(tags)}
+          <a href="/post/${escapeHtml(post.slug)}" class="readmore default">Read More\u2026</a>
+        </article>
       </div>
-    </article>`;
+    </section>`;
 }
 
 function renderPostRow(post) {
-  const tags = parseTags(post.tags);
   const date = formatDate(post.published_at || post.created_at);
-
   return `
-    <article class="post-row">
-      <div class="post-row-date">${escapeHtml(date)}</div>
-      <div>
-        <div class="row-topline">
-          ${renderCategoryPill(post.category_name, post.category_slug)}
-          <span class="row-reading-time">${escapeHtml(readingTime(post.content))}</span>
-        </div>
-        <h3><a href="/post/${escapeHtml(post.slug)}">${escapeHtml(post.title)}</a></h3>
-        <p>${escapeHtml(post.excerpt || '')}</p>
-        ${renderTagList(tags)}
+    <div class="row">
+      <div class="ico" aria-hidden="true"></div>
+      <div class="name">
+        <a href="/post/${escapeHtml(post.slug)}">${escapeHtml(post.title)}</a>
+        <small>${renderCategoryPill(post.category_name, post.category_slug)} ${escapeHtml(post.excerpt || '')}</small>
       </div>
-      <a href="/post/${escapeHtml(post.slug)}" class="row-arrow">Read story</a>
-    </article>`;
+      <div class="date">${escapeHtml(date)}</div>
+    </div>`;
 }
 
 function layout(title, content, options = {}) {
@@ -889,65 +880,65 @@ app.get('/', async (req, res) => {
     const railNavLinks = categories
       .map(
         (c) =>
-          `<a href="/?category=${escapeHtml(c.slug)}" class="${category === c.slug ? 'active' : ''}">${escapeHtml(
-            c.name
-          )}</a>`
+          `<a href="/?category=${escapeHtml(c.slug)}"${category === c.slug ? ' style="font-weight:bold"' : ''}>${escapeHtml(c.name)}</a>`
       )
       .join('');
 
-    const introHtml = `
-      <section class="page-intro">
-        <span class="eyebrow">Official Company Blog</span>
-        <h1>${escapeHtml(SITE_NAME)}</h1>
-        <p>${escapeHtml(SITE_DESCRIPTION)}</p>
-      </section>`;
-
-    const railHtml = `
-      <aside class="rail">
-        <div class="rail-box">
-          <div class="rail-box-head">Categories</div>
-          <div class="rail-box-body rail-nav">
-            <a href="/" class="${!category ? 'active' : ''}">All Posts</a>
-            ${railNavLinks}
+    const sideHtml = `
+      <div>
+        <section class="window sidewin">
+          <div class="titlebar"><div class="box" aria-hidden="true"></div><div class="ttl"><span>About</span></div></div>
+          <div class="win-body"><p style="margin:6px 0;line-height:1.55;">${escapeHtml(SITE_DESCRIPTION)}</p></div>
+        </section>
+        <section class="window sidewin" id="categories">
+          <div class="titlebar"><div class="box" aria-hidden="true"></div><div class="ttl"><span>Categories</span></div></div>
+          <div class="win-body">
+            <ul>
+              <li><a href="/"${!category ? ' style="font-weight:bold"' : ''}>All Posts</a></li>
+              ${categories.map((c) => `<li><a href="/?category=${escapeHtml(c.slug)}"${category === c.slug ? ' style="font-weight:bold"' : ''}>${escapeHtml(c.name)}</a></li>`).join('')}
+            </ul>
           </div>
-        </div>
-        <div class="rail-box">
-          <div class="rail-box-head">In This Blog</div>
-          <div class="rail-box-body">${escapeHtml(SITE_DESCRIPTION)}</div>
-        </div>
-      </aside>`;
+        </section>
+        <section class="alert" aria-label="Subscribe">
+          <div class="aicon" aria-hidden="true"></div>
+          <div>
+            <h3>Never miss an issue.</h3>
+            <p>${escapeHtml(SITE_NAME)} lands in your feed every week.</p>
+            <div class="field"><a class="readmore default" href="/rss">Get the RSS feed</a></div>
+          </div>
+        </section>
+      </div>`;
 
     const featuredHtml = featuredPost ? renderFeaturedPost(featuredPost) : '';
     const listHtml = otherPosts.length
       ? `
-        <section>
-          <h2 class="post-section-title">Latest Stories</h2>
-          <div class="post-list">${otherPosts.map(renderPostRow).join('')}</div>
+        <section class="window">
+          <div class="titlebar"><div class="box" aria-hidden="true"></div><div class="ttl"><span>${category ? escapeHtml(category) + ' posts' : 'Recent Posts'}</span></div><div class="box collapse" aria-hidden="true"></div></div>
+          <div class="liststrip">${otherPosts.length + (featuredPost ? 1 : 0)} items, updated weekly</div>
+          <div class="listwrap">
+            <div class="rows">${otherPosts.map(renderPostRow).join('')}</div>
+            <div class="rail" aria-hidden="true"><div class="arrow up"></div><div class="track"><div class="thumb"></div></div><div class="arrow dn"></div></div>
+          </div>
         </section>`
       : featuredPost
         ? ''
         : '<div class="empty-state"><p>No posts yet. Check back soon.</p></div>';
 
     const html = `
-      <main>
-        <div class="container">
-          <div class="page-grid">
-            ${railHtml}
-            <div class="page-main">
-              ${introHtml}
-              ${featuredHtml}
-              ${listHtml}
-            </div>
-          </div>
+      <div class="cols">
+        <div>
+          ${featuredHtml}
+          ${listHtml}
         </div>
-      </main>`;
+        ${sideHtml}
+      </div>`;
 
     res.send(layout(SITE_NAME, html, { description: SITE_DESCRIPTION }));
   } catch (err) {
     console.error(err);
     res
       .status(500)
-      .send(layout('Error', '<main><div class="container"><div class="empty-state"><p>Blog data is not available yet. Check your database connection and try again.</p></div></div></main>'));
+      .send(layout('Error', '<div class="empty-state"><p>Blog data is not available yet. Check your database connection and try again.</p></div>'));
   }
 });
 
