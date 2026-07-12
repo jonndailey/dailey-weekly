@@ -1,0 +1,356 @@
+<title>Dailey Weekly — Mac OS 9 Mockup</title>
+<style>
+  /* ============ Platinum tokens ============ */
+  :root {
+    --desktop: #7a96b8;
+    --plat: #dddddd;
+    --plat-dark: #cccccc;
+    --bevel-hi: #ffffff;
+    --bevel-lo: #909090;
+    --ink: #000000;
+    --paper: #ffffff;
+    --link: #0000cc;
+    --stripe-a: #cccccc;
+    --stripe-b: #dddddd;
+    --lbl-orange: #ff9933; --lbl-red: #dd3939; --lbl-blue: #3366cc; --lbl-green: #339933; --lbl-purple: #9933cc;
+    --chicago: "Charcoal", "Geneva", "Verdana", "Helvetica Neue", sans-serif;
+    --body: "Verdana", "Geneva", sans-serif;
+  }
+  /* This mockup deliberately renders one visual world (Platinum) in both viewer themes. */
+  html { background: var(--desktop); }
+  body {
+    margin: 0;
+    font-family: var(--body);
+    font-size: 13px;
+    color: var(--ink);
+    background:
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4"><rect width="4" height="4" fill="%237a96b8"/><rect x="0" y="0" width="1" height="1" fill="%23708cae"/><rect x="2" y="2" width="1" height="1" fill="%23708cae"/></svg>');
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  /* ============ Menu bar ============ */
+  .menubar {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center; gap: 0;
+    height: 24px;
+    background: linear-gradient(#f4f4f4, #d8d8d8);
+    border-bottom: 1px solid #000;
+    box-shadow: inset 0 1px 0 #fff;
+    padding: 0 8px;
+    font-family: var(--chicago);
+    font-weight: bold;
+    font-size: 12px;
+    letter-spacing: 0.01em;
+  }
+  .menubar .mark {
+    width: 15px; height: 15px; margin: 0 10px 0 4px;
+    background: conic-gradient(#dd3939 0 60deg, #ff9933 60deg 120deg, #f7d117 120deg 180deg, #339933 180deg 240deg, #3366cc 240deg 300deg, #9933cc 300deg 360deg);
+    -webkit-mask: radial-gradient(circle at 42% 42%, #000 0 58%, transparent 60%);
+            mask: radial-gradient(circle at 42% 42%, #000 0 58%, transparent 60%);
+  }
+  .menubar .item { padding: 4px 10px; cursor: default; }
+  .menubar .item.title { padding-right: 16px; }
+  .menubar .item:not(.title):hover { background: #335a9a; color: #fff; }
+  .menubar .spacer { flex: 1; }
+  .menubar .clock { font-family: var(--body); font-weight: normal; font-size: 11px; padding-right: 6px; }
+
+  /* ============ Windows ============ */
+  .desk { max-width: 1060px; margin: 0 auto; padding: 26px 18px 0; }
+  .window {
+    background: var(--plat);
+    border: 1px solid #000;
+    box-shadow: inset 1px 1px 0 var(--bevel-hi), inset -1px -1px 0 var(--bevel-lo), 2px 3px 0 rgba(0,0,0,0.35);
+    margin-bottom: 26px;
+  }
+  .titlebar {
+    display: flex; align-items: center;
+    height: 22px; padding: 0 6px;
+    background: repeating-linear-gradient(to bottom, var(--stripe-b) 0 2px, var(--stripe-a) 2px 4px);
+    border-bottom: 1px solid #000;
+    box-shadow: inset 1px 1px 0 var(--bevel-hi);
+    user-select: none;
+  }
+  .titlebar .box {
+    width: 12px; height: 12px; flex: none;
+    background: var(--plat);
+    border: 1px solid #000;
+    box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #999;
+  }
+  .titlebar .box.collapse { position: relative; }
+  .titlebar .box.collapse::after { content:""; position:absolute; left:1px; right:1px; top:4px; height:2px; background:#666; }
+  .titlebar .ttl {
+    flex: 1; text-align: center;
+    font-family: var(--chicago); font-weight: bold; font-size: 12.5px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    padding: 0 8px;
+  }
+  .titlebar .ttl span { background: var(--plat); padding: 0 10px; }
+  .win-body { padding: 12px; }
+
+  /* Finder list header strip */
+  .liststrip {
+    font-size: 10px; color: #333;
+    padding: 3px 10px;
+    border-bottom: 1px solid #999;
+    background: #eee;
+    box-shadow: inset 0 1px 0 #fff;
+  }
+
+  /* ============ Featured document window ============ */
+  .doc { background: var(--paper); border: 1px solid #777; box-shadow: inset 1px 1px 0 #bbb; padding: 22px 26px; }
+  .doc h1, .doc h2 { font-family: var(--chicago); font-weight: bold; letter-spacing: -0.01em; text-wrap: balance; margin: 0 0 6px; }
+  .doc h1 { font-size: 24px; }
+  .doc p { line-height: 1.65; max-width: 62ch; margin: 10px 0; }
+  .meta { font-size: 10.5px; color: #444; margin-bottom: 12px; }
+  .meta b { color: #000; }
+  a { color: var(--link); }
+  .readmore {
+    display: inline-block; margin-top: 8px;
+    font-family: var(--chicago); font-weight: bold; font-size: 12px;
+    background: linear-gradient(#f8f8f8, #d6d6d6);
+    border: 1px solid #000; border-radius: 5px;
+    box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #9a9a9a;
+    padding: 4px 14px; color: #000; text-decoration: none;
+  }
+  .readmore.default { outline: 2px solid #000; outline-offset: 2px; border-radius: 6px; }
+  .readmore:active { background: linear-gradient(#b9b9b9, #d0d0d0); box-shadow: inset 1px 1px 0 #999; }
+
+  /* ============ Label chips ============ */
+  .chip {
+    display: inline-block;
+    font-size: 10px; font-weight: bold; color: #000;
+    padding: 1px 8px 2px; margin-right: 6px;
+    border: 1px solid #000; border-radius: 3px;
+    box-shadow: inset 1px 1px 0 rgba(255,255,255,.6);
+  }
+  .chip.eng { background: var(--lbl-orange); }
+  .chip.product { background: #7db9e8; }
+  .chip.company { background: #8fd48f; }
+  .chip.changelog { background: #d9a7e0; }
+
+  /* ============ Post list rows ============ */
+  .rows { background: var(--paper); border: 1px solid #777; box-shadow: inset 1px 1px 0 #bbb; }
+  .row { display: flex; align-items: baseline; gap: 12px; padding: 9px 12px; border-bottom: 1px solid #ddd; }
+  .row:nth-child(even) { background: #f2f6fb; }
+  .row .ico { flex: none; width: 16px; height: 14px; align-self: center;
+    background: linear-gradient(#fff, #eee); border: 1px solid #555; border-radius: 1px;
+    box-shadow: 2px 0 0 -1px #999; }
+  .row .name { flex: 1; min-width: 0; }
+  .row .name a { font-family: var(--chicago); font-weight: bold; font-size: 13px; color: #000; text-decoration: none; }
+  .row .name a:hover { text-decoration: underline; color: var(--link); }
+  .row .name small { display: block; color: #555; font-size: 11px; margin-top: 2px; }
+  .row .date { flex: none; font-size: 10.5px; color: #444; font-variant-numeric: tabular-nums; }
+
+  /* fake scrollbar rail on list window */
+  .listwrap { display: grid; grid-template-columns: 1fr 16px; }
+  .rail { border-left: 1px solid #000; background: repeating-conic-gradient(#e6e6e6 0 25%, #dcdcdc 0 50%) 0 0/4px 4px; display: flex; flex-direction: column; }
+  .rail .arrow { height: 16px; flex: none; background: var(--plat); border: 1px solid #666; margin: 0; position: relative; box-shadow: inset 1px 1px 0 #fff; }
+  .rail .arrow.up::after, .rail .arrow.dn::after { content: ""; position: absolute; left: 4px; border-left: 3px solid transparent; border-right: 3px solid transparent; }
+  .rail .arrow.up::after { top: 5px; border-bottom: 5px solid #222; }
+  .rail .arrow.dn::after { bottom: 5px; border-top: 5px solid #222; }
+  .rail .thumb { height: 44px; margin: 2px 1px; background: linear-gradient(#9db8dd, #7e9fce); border: 1px solid #234; border-radius: 2px; box-shadow: inset 1px 1px 0 #cfe0f5; position: relative; }
+  .rail .thumb::after { content:""; position:absolute; inset: 16px 3px auto; height: 8px;
+    background: repeating-linear-gradient(to bottom, #5c7ba8 0 1px, transparent 1px 3px); }
+  .rail .track { flex: 1; }
+
+  /* ============ Two-column layout ============ */
+  .cols { display: grid; grid-template-columns: 1fr 290px; gap: 26px; align-items: start; }
+  @media (max-width: 820px) { .cols { grid-template-columns: 1fr; } }
+
+  .sidewin .win-body { padding: 10px 12px; font-size: 12px; }
+  .sidewin ul { margin: 4px 0; padding-left: 4px; list-style: none; }
+  .sidewin li { padding: 3px 0; }
+
+  /* ============ Alert dialog (subscribe) ============ */
+  .alert {
+    background: var(--plat);
+    border: 2px solid #000; border-radius: 7px;
+    box-shadow: inset 1px 1px 0 #fff, inset -2px -2px 0 #aaa, 3px 4px 0 rgba(0,0,0,.35);
+    padding: 16px;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .alert .aicon { flex: none; width: 34px; height: 34px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #9db8dd, #3d5f96);
+    border: 2px solid #000; position: relative; }
+  .alert .aicon::after { content: "!"; position: absolute; inset: 0; display: grid; place-items: center;
+    color: #fff; font-family: var(--chicago); font-weight: bold; font-size: 20px; }
+  .alert h3 { margin: 0 0 4px; font-family: var(--chicago); font-size: 13px; }
+  .alert p { margin: 0 0 10px; font-size: 11.5px; line-height: 1.5; }
+  .alert .field { display: flex; gap: 8px; flex-wrap: wrap; }
+  .alert input {
+    font-family: var(--body); font-size: 12px; padding: 4px 6px; width: 200px;
+    background: #fff; border: 1px solid #000; box-shadow: inset 1px 1px 0 #999;
+  }
+
+  /* ============ Section labels (mockup only) ============ */
+  .screen-label {
+    max-width: 1060px; margin: 30px auto 12px; padding: 0 18px;
+  }
+  .screen-label span {
+    display: inline-block;
+    background: #fff8c9; border: 1px solid #b3a24a;
+    box-shadow: 2px 2px 0 rgba(0,0,0,.25);
+    font-size: 11px; padding: 4px 10px;
+  }
+
+  /* ============ Post page article ============ */
+  .doc .figframe { border: 1px solid #000; box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #999; background: var(--plat); padding: 5px; margin: 16px 0; }
+  .doc .figframe .ph { height: 170px; background:
+      repeating-linear-gradient(45deg, #b9cade 0 8px, #a9bcd4 8px 16px); border: 1px solid #666; display: grid; place-items: center; color: #33475e; font-size: 11px; }
+  .doc .figframe figcaption { font-size: 10.5px; color: #444; padding: 5px 2px 0; }
+  .doc blockquote { margin: 14px 0; padding: 8px 12px; border-left: 4px solid #999; background: #f2f2f2; font-size: 12.5px; }
+  .doc code { font-family: "Courier New", monospace; font-size: 12px; background: #f0f0f0; border: 1px solid #ccc; padding: 0 3px; }
+
+  /* ============ Dialog row (login + bomb) ============ */
+  .dialog-row { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+  @media (max-width: 820px) { .dialog-row { grid-template-columns: 1fr; } }
+  .btnrow { display: flex; gap: 10px; justify-content: flex-end; margin-top: 14px; }
+  .bomb { width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #666, #111);
+    border: 1px solid #000; position: relative; flex: none; }
+  .bomb::after { content:""; position:absolute; top:-7px; left: 60%; width: 10px; height: 10px;
+    border-top: 2px solid #a55; border-right: 2px solid #a55; border-radius: 0 8px 0 0; }
+  .keyicon { width: 30px; height: 30px; flex: none; position: relative; }
+  .keyicon::before { content:""; position:absolute; top: 4px; left: 2px; width: 14px; height: 14px; border: 3px solid #555; border-radius: 50%; }
+  .keyicon::after { content:""; position:absolute; top: 12px; left: 15px; width: 13px; height: 3px; background: #555; box-shadow: 8px 3px 0 -1px #555, 4px 3px 0 -1px #555; }
+
+  footer.deskfoot { max-width: 1060px; margin: 10px auto 0; padding: 0 18px; font-size: 10.5px; color: #dce6f2; text-shadow: 1px 1px 0 rgba(0,0,0,.4); }
+  :focus-visible { outline: 2px dotted #000; outline-offset: 2px; }
+</style>
+
+<!-- ================= MENU BAR ================= -->
+<div class="menubar" role="banner">
+  <div class="mark" aria-hidden="true"></div>
+  <div class="item title">Dailey Weekly</div>
+  <div class="item">Home</div>
+  <div class="item">Categories</div>
+  <div class="item">RSS</div>
+  <div class="item">About</div>
+  <div class="spacer"></div>
+  <div class="clock">Fri 9:41 AM</div>
+</div>
+
+<div class="screen-label"><span><b>Screen 1 — Homepage.</b> Headings ship in real ChicagoFLF (self-hosted); this mockup approximates with system fonts.</span></div>
+
+<div class="desk">
+  <div class="cols">
+    <div>
+      <!-- Featured post window -->
+      <section class="window">
+        <div class="titlebar"><div class="box" aria-hidden="true"></div><div class="ttl"><span>Featured</span></div><div class="box collapse" aria-hidden="true"></div></div>
+        <div class="win-body">
+          <article class="doc">
+            <div class="meta"><span class="chip eng">Engineering</span> <b>July 11, 2026</b> · Jonny Dailey · 6 min read</div>
+            <h1>Photos now shows your shoot the moment it lands</h1>
+            <p>We rebuilt the upload pipeline around a dedicated, autoscaling worker fleet. Drop a 300-file card on Dailey Photos and tiles fill in live as each frame finishes — no refreshing, no spinners that lie to you. Here's how the queue, the cache layer, and KEDA fit together.</p>
+            <a class="readmore default" href="#">Read More…</a>
+          </article>
+        </div>
+      </section>
+
+      <!-- Post list window -->
+      <section class="window">
+        <div class="titlebar"><div class="box" aria-hidden="true"></div><div class="ttl"><span>Recent Posts</span></div><div class="box collapse" aria-hidden="true"></div></div>
+        <div class="liststrip">8 items, updated weekly</div>
+        <div class="listwrap">
+          <div class="rows">
+            <div class="row"><div class="ico" aria-hidden="true"></div><div class="name"><a href="#">Working with photo labs: what pros actually need</a><small><span class="chip company">Company</span> A lab processes thousands of RAW frames a week. We asked what breaks.</small></div><div class="date">Jul 8, 2026</div></div>
+            <div class="row"><div class="ico" aria-hidden="true"></div><div class="name"><a href="#">Inside Burst: our elastic RAW pipeline</a><small><span class="chip eng">Engineering</span> LibRaw, embedded previews, and scaling 1→8 on queue depth.</small></div><div class="date">Jul 2, 2026</div></div>
+            <div class="row"><div class="ico" aria-hidden="true"></div><div class="name"><a href="#">Client Mode: proofing galleries your clients don't need an account for</a><small><span class="chip product">Product</span> Password-protected selections with a submissions inbox.</small></div><div class="date">Jun 25, 2026</div></div>
+            <div class="row"><div class="ico" aria-hidden="true"></div><div class="name"><a href="#">Changelog: two-week trials, cancellation, and cleaner sign-up</a><small><span class="chip changelog">Changelog</span> Small paper cuts, all patched.</small></div><div class="date">Jun 30, 2026</div></div>
+            <div class="row"><div class="ico" aria-hidden="true"></div><div class="name"><a href="#">Why your originals are sacred (and stay byte-for-byte)</a><small><span class="chip product">Product</span> Variants are derived. Originals are never touched.</small></div><div class="date">Jun 18, 2026</div></div>
+            <div class="row"><div class="ico" aria-hidden="true"></div><div class="name"><a href="#">HEIC, HDR gain maps, and the tone-mapping rabbit hole</a><small><span class="chip eng">Engineering</span> Supporting the files iPhones actually produce.</small></div><div class="date">Jun 11, 2026</div></div>
+          </div>
+          <div class="rail" aria-hidden="true"><div class="arrow up"></div><div class="track"><div class="thumb"></div></div><div class="arrow dn"></div></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Side windows -->
+    <div>
+      <section class="window sidewin">
+        <div class="titlebar"><div class="box" aria-hidden="true"></div><div class="ttl"><span>About</span></div></div>
+        <div class="win-body">
+          <p style="margin:6px 0; line-height:1.55;">Weekly notes from the Dailey team — product updates, engineering deep-dives, and company news. Written by humans, shipped on Fridays.</p>
+        </div>
+      </section>
+
+      <section class="window sidewin">
+        <div class="titlebar"><div class="box" aria-hidden="true"></div><div class="ttl"><span>Categories</span></div></div>
+        <div class="win-body">
+          <ul>
+            <li><span class="chip eng">Engineering</span> 14</li>
+            <li><span class="chip product">Product</span> 9</li>
+            <li><span class="chip company">Company</span> 6</li>
+            <li><span class="chip changelog">Changelog</span> 11</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Subscribe alert -->
+      <section class="alert" aria-label="Subscribe">
+        <div class="aicon" aria-hidden="true"></div>
+        <div>
+          <h3>Never miss an issue.</h3>
+          <p>Dailey Weekly lands in your inbox every Friday. No tracking, one-click unsubscribe.</p>
+          <div class="field">
+            <input type="email" placeholder="you@example.com" aria-label="Email address">
+            <a class="readmore default" href="#">Subscribe</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div class="screen-label"><span><b>Screen 2 — Post page.</b> One document window; Verdana body at reading size, beveled image frames.</span></div>
+
+<div class="desk">
+  <section class="window">
+    <div class="titlebar"><div class="box" aria-hidden="true"></div><div class="ttl"><span>Photos now shows your shoot the moment it lands</span></div><div class="box collapse" aria-hidden="true"></div></div>
+    <div class="liststrip">Engineering · July 11, 2026 · Jonny Dailey · 6 min read</div>
+    <div class="win-body">
+      <article class="doc">
+        <h2>The lie of the spinner</h2>
+        <p>For months, uploading a batch to an album had a dirty secret: the photos finished processing in seconds, but the page didn't know. A cached album snapshot kept serving stale statuses, so tiles spun until you refreshed. The processing was fast — the <em>telling you about it</em> was broken.</p>
+        <figure class="figframe">
+          <div class="ph">[ pipeline diagram — queue → workers → cache invalidation ]</div>
+          <figcaption>Whoever flips an image to ready is now responsible for telling every cache layer about it.</figcaption>
+        </figure>
+        <p>The fix has two halves. Server-side, the variant worker now invalidates the album cache the instant a photo transitions — measured lag between "actually ready" and "page knows" is now <code>0.1s</code>. Client-side, album views poll the uncached status endpoint per-tile, exactly like the library view always did.</p>
+        <blockquote>Rule we wrote down: a progress indicator that can outlive the work it describes is a bug, not a UI choice.</blockquote>
+        <p>Then we load-tested it in production: 48 files blasted in five seconds, an autoscaler watching queue depth, and a worker fleet that grew from three to eight and back without anyone touching a thing.</p>
+        <a class="readmore" href="#">← Back to all posts</a>
+      </article>
+    </div>
+  </section>
+</div>
+
+<div class="screen-label"><span><b>Screen 3 — Dialogs.</b> Admin login and the 404 page, in period costume.</span></div>
+
+<div class="desk">
+  <div class="dialog-row">
+    <section class="alert" aria-label="Admin login">
+      <div class="keyicon" aria-hidden="true"></div>
+      <div style="flex:1">
+        <h3>Dailey Weekly requires a password to make changes.</h3>
+        <p>Enter the administrator password to open the editor.</p>
+        <div class="field" style="width:100%">
+          <input type="password" placeholder="••••••••••••" aria-label="Password" style="flex:1; min-width:140px;">
+        </div>
+        <div class="btnrow"><a class="readmore" href="#">Cancel</a><a class="readmore default" href="#">OK</a></div>
+      </div>
+    </section>
+
+    <section class="alert" aria-label="Not found">
+      <div class="bomb" aria-hidden="true"></div>
+      <div style="flex:1">
+        <h3>Sorry, a system error occurred.</h3>
+        <p>“That page could not be found.”<br>Error code: 404</p>
+        <div class="btnrow"><a class="readmore default" href="#">Restart</a></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<footer class="deskfoot">Mockup for the Dailey Weekly redesign · Production build self-hosts ChicagoFLF for all Chicago-style text · No CDNs, no frameworks, one CSS file.</footer>
