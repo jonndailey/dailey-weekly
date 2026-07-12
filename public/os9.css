@@ -322,3 +322,25 @@
 .notes-card { background: #fff8c9; border: 1px solid #b3a24a; box-shadow: 2px 2px 0 rgba(0,0,0,.25);
   padding: 10px 12px; font-size: 12px; margin-bottom: 16px; }
 .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ============ Remaining admin/media + embed classes ============ */
+.admin-grid { display: grid; grid-template-columns: 1fr 300px; gap: 20px; align-items: start; }
+@media (max-width: 700px) { .admin-grid { grid-template-columns: 1fr; } }
+.admin-card { background: var(--plat); border: 1px solid #000;
+  box-shadow: inset 1px 1px 0 var(--bevel-hi), inset -1px -1px 0 var(--bevel-lo), 2px 3px 0 rgba(0,0,0,.35);
+  padding: 14px; }
+.btn-secondary { background: linear-gradient(#f2f2f2, #dcdcdc); }
+.stat-pills { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 4px; }
+.media-chip { display: inline-block; font-size: 10px; font-weight: bold; border: 1px solid #000;
+  border-radius: 3px; padding: 1px 7px; background: #cfcfcf; box-shadow: inset 1px 1px 0 rgba(255,255,255,.6); }
+.media-chip--image { background: #7db9e8; }
+.media-chip--video { background: #d9a7e0; }
+.media-chip--file, .media-chip--other { background: #cfcfcf; }
+.media-code { display: inline-block; font-family: "Courier New", monospace; font-size: 11px;
+  background: #f0f0f0; border: 1px solid #ccc; padding: 1px 5px; margin: 2px 4px 2px 0; word-break: break-all; }
+.meta-row { display: flex; align-items: center; gap: 6px; font-size: 10.5px; color: #444; margin: 4px 0 12px; }
+.meta-row .dot { width: 3px; height: 3px; border-radius: 50%; background: #888; }
+.logo-mark { display: none; }
+/* image rows from markdown */
+.image-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.image-row .embed-block { flex: 1; min-width: 200px; }

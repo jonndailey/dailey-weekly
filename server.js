@@ -1055,18 +1055,24 @@ app.get('/admin/login', (req, res) => {
     layout(
       'Login',
       `
-      <div class="login-box">
-        <h1>Admin Login</h1>
-        ${lockedMessage}
-        ${error}
-        <form method="POST" action="/admin/login">
-          <div class="form-group">
-            <label>Password</label>
-            <input type="password" name="password" required autofocus ${throttle.blocked ? 'disabled' : ''}>
-          </div>
-          <button type="submit" class="btn" style="width:100%;" ${throttle.blocked ? 'disabled' : ''}>Log In</button>
-        </form>
-      </div>`,
+      <section class="alert" aria-label="Admin login" style="max-width:460px;margin:44px auto;">
+        <div class="keyicon" aria-hidden="true"></div>
+        <div style="flex:1">
+          <h3>${escapeHtml(SITE_NAME)} requires a password to make changes.</h3>
+          <p>Enter the administrator password to open the editor.</p>
+          ${lockedMessage}
+          ${error}
+          <form method="POST" action="/admin/login">
+            <div class="field" style="width:100%">
+              <input class="os-input" type="password" name="password" placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022" required autofocus ${throttle.blocked ? 'disabled' : ''} style="flex:1;min-width:180px;">
+            </div>
+            <div class="btnrow" style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px;">
+              <a class="readmore" href="/">Cancel</a>
+              <button type="submit" class="readmore default" ${throttle.blocked ? 'disabled' : ''}>OK</button>
+            </div>
+          </form>
+        </div>
+      </section>`,
       { isAdmin: true }
     )
   );
@@ -1108,7 +1114,7 @@ app.get('/admin', adminAuth, async (req, res) => {
         return `<tr>
           <td><a href="/admin/posts/${post.id}/edit">${escapeHtml(post.title)}</a></td>
           <td>${escapeHtml(post.category_name || '—')}</td>
-          <td>${post.published ? '<span style="color:#027a48;font-weight:700;">Published</span>' : '<span style="color:#667085;font-weight:700;">Draft</span>'}</td>
+          <td>${post.published ? '<span class="chip published">Published</span>' : '<span class="chip draft">Draft</span>'}</td>
           <td>${escapeHtml(date)}</td>
           <td class="actions">
             <a href="/admin/posts/${post.id}/edit" class="btn btn-sm">Edit</a>
@@ -1125,19 +1131,16 @@ app.get('/admin', adminAuth, async (req, res) => {
       layout(
         'Posts',
         `
-        <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:24px;">
-          <div>
-            <h1 class="page-title">Posts</h1>
-            <p class="page-subtitle">Write company updates, publish launches, and embed product video directly in a post.</p>
-          </div>
-          <a href="/admin/posts/new" class="btn">New Post</a>
-        </div>
         ${success}
         ${error}
-        <table class="admin-table">
-          <thead><tr><th>Title</th><th>Category</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead>
-          <tbody>${rows || '<tr><td colspan="5" style="text-align:center;padding:36px;color:#667085;">No posts yet.</td></tr>'}</tbody>
-        </table>`,
+        <section class="window">
+          <div class="titlebar"><div class="box" aria-hidden="true"></div><div class="ttl"><span>Posts</span></div><div class="box collapse" aria-hidden="true"></div></div>
+          <div class="toolbar"><a href="/admin/posts/new" class="btn">New Post</a><a href="/admin/categories" class="btn">Categories</a><a href="/admin/media" class="btn">Media</a></div>
+          <table class="admin-table">
+            <thead><tr><th>Title</th><th>Category</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead>
+            <tbody>${rows || '<tr><td colspan="5" style="text-align:center;padding:36px;color:#667085;">No posts yet.</td></tr>'}</tbody>
+          </table>
+        </section>`,
         { isAdmin: true }
       )
     );
@@ -1430,17 +1433,18 @@ app.get('/admin/categories', adminAuth, async (_req, res) => {
       layout(
         'Categories',
         `
-        <h1 class="page-title">Categories</h1>
-        <p class="page-subtitle">Keep the blog taxonomy tight. A few strong buckets reads better than a crowded category list.</p>
-        <form method="POST" action="/admin/categories" style="display:flex;gap:12px;flex-wrap:wrap;margin:24px 0;">
-          <input type="hidden" name="csrf_token" value="${escapeHtml(_req.adminSession.csrf)}">
-          <input type="text" name="name" placeholder="New category name" required style="flex:1;min-width:220px;padding:12px 14px;border:1px solid #d8dee9;border-radius:12px;font-size:15px;">
-          <button type="submit" class="btn">Add</button>
-        </form>
-        <table class="admin-table">
-          <thead><tr><th>Name</th><th>Slug</th><th>Actions</th></tr></thead>
-          <tbody>${rows || '<tr><td colspan="3" style="text-align:center;padding:36px;color:#667085;">No categories yet.</td></tr>'}</tbody>
-        </table>`,
+        <section class="window">
+          <div class="titlebar"><div class="box" aria-hidden="true"></div><div class="ttl"><span>Categories</span></div><div class="box collapse" aria-hidden="true"></div></div>
+          <form class="toolbar" method="POST" action="/admin/categories">
+            <input type="hidden" name="csrf_token" value="${escapeHtml(_req.adminSession.csrf)}">
+            <input class="os-input" type="text" name="name" placeholder="New category name" required style="flex:1;min-width:200px;">
+            <button type="submit" class="btn">Add</button>
+          </form>
+          <table class="admin-table">
+            <thead><tr><th>Name</th><th>Slug</th><th>Actions</th></tr></thead>
+            <tbody>${rows || '<tr><td colspan="3" style="text-align:center;padding:36px;color:#667085;">No categories yet.</td></tr>'}</tbody>
+          </table>
+        </section>`,
         { isAdmin: true }
       )
     );
@@ -1476,52 +1480,50 @@ app.post('/admin/categories/:id/delete', adminAuth, requireTrustedOrigin, requir
 function postForm({ catOptions, action, csrfToken, post, tags, isEdit }) {
   const currentPost = post || {};
   const encodedContent = escapeHtml(currentPost.content || '');
+  const winTitle = escapeHtml(currentPost.title || (isEdit ? 'Untitled' : 'New Post'));
 
   return `
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;">
-      <div>
-        <h1 class="page-title">${isEdit ? 'Edit Post' : 'New Post'}</h1>
-        <p class="page-subtitle">Keep the writing clean and the layout simple. The post body supports Markdown plus video shortcodes.</p>
+    <section class="window">
+      <div class="titlebar"><div class="box" aria-hidden="true"></div><div class="ttl"><span>${winTitle}</span></div><div class="box collapse" aria-hidden="true"></div></div>
+      <div class="win-body">
+        <div class="notes-card">
+          <strong>Video &amp; media embeds</strong>
+          <p>Use <code>{{youtube:https://www.youtube.com/watch?v=VIDEO_ID|Optional caption}}</code>, <code>{{video:/media/123/clip.mp4|caption}}</code>, or <code>{{image:/media/456/photo.webp|caption}}</code>. Upload assets in <a href="/admin/media">Media</a>.</p>
+        </div>
+        <form method="POST" action="${action || '/admin/posts'}">
+          <input type="hidden" name="csrf_token" value="${escapeHtml(csrfToken || '')}">
+          <div class="field-row">
+            <label>Title</label>
+            <input class="os-input" type="text" name="title" value="${escapeHtml(currentPost.title || '')}" required>
+          </div>
+          <div class="field-row">
+            <label>Excerpt</label>
+            <input class="os-input" type="text" name="excerpt" value="${escapeHtml(currentPost.excerpt || '')}" placeholder="Short summary for the home page and SEO cards">
+          </div>
+          <div class="field-row">
+            <label>Category</label>
+            <select class="os-select" name="category_id"><option value="">— None —</option>${catOptions}</select>
+          </div>
+          <div class="field-row">
+            <label>Tags (comma-separated)</label>
+            <input class="os-input" type="text" name="tags" value="${escapeHtml(tags || '')}" placeholder="e.g. launch, engineering, company">
+          </div>
+          <div class="field-row">
+            <label>Content (Markdown)</label>
+            <textarea class="os-textarea" name="content" required>${encodedContent}</textarea>
+            <span class="form-help">Markdown for headings, lists, links, code, quotes, plus the media shortcodes above.</span>
+          </div>
+          <div class="field-row" style="flex-direction:row;align-items:center;gap:8px;">
+            <input type="checkbox" name="published" id="published" ${currentPost.published ? 'checked' : ''}>
+            <label for="published" style="margin:0;">Published</label>
+          </div>
+          <div class="btnrow" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;justify-content:flex-end;">
+            <a href="/admin" class="readmore">Cancel</a>
+            <button type="submit" class="readmore default">${isEdit ? 'Update Post' : 'Create Post'}</button>
+          </div>
+        </form>
       </div>
-    </div>
-    <div class="notes-card">
-      <strong>Video Embeds</strong>
-      <p>Use <code>{{youtube:https://www.youtube.com/watch?v=VIDEO_ID|Optional caption}}</code> for a YouTube embed.</p>
-      <p>Use <code>{{video:/media/123/launch-demo.mp4|Optional caption}}</code> for hosted video and <code>{{image:/media/456/team-photo.webp|Optional caption}}</code> for hosted images.</p>
-      <p>Upload assets in <a href="/admin/media">Media</a>. Every upload gets a stable <code>/media/...</code> path backed by Dailey OS object storage.</p>
-    </div>
-    <form method="POST" action="${action || '/admin/posts'}" style="margin-top:24px;">
-      <input type="hidden" name="csrf_token" value="${escapeHtml(csrfToken || '')}">
-      <div class="form-group">
-        <label>Title</label>
-        <input type="text" name="title" value="${escapeHtml(currentPost.title || '')}" required>
-      </div>
-      <div class="form-group">
-        <label>Excerpt</label>
-        <input type="text" name="excerpt" value="${escapeHtml(currentPost.excerpt || '')}" placeholder="Short summary for the home page and SEO cards">
-      </div>
-      <div class="form-group">
-        <label>Category</label>
-        <select name="category_id"><option value="">— None —</option>${catOptions}</select>
-      </div>
-      <div class="form-group">
-        <label>Tags (comma-separated)</label>
-        <input type="text" name="tags" value="${escapeHtml(tags || '')}" placeholder="e.g. launch, engineering, company">
-      </div>
-      <div class="form-group">
-        <label>Content (Markdown)</label>
-        <textarea name="content" required>${encodedContent}</textarea>
-        <div class="form-help">Markdown is supported for headings, lists, links, inline code, block quotes, and the media shortcodes above.</div>
-      </div>
-      <div class="form-group checkbox-group">
-        <input type="checkbox" name="published" id="published" ${currentPost.published ? 'checked' : ''}>
-        <label for="published" style="margin:0;">Published</label>
-      </div>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;">
-        <button type="submit" class="btn">${isEdit ? 'Update Post' : 'Create Post'}</button>
-        <a href="/admin" class="btn btn-secondary">Cancel</a>
-      </div>
-    </form>`;
+    </section>`;
 }
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
