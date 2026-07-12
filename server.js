@@ -104,6 +104,8 @@ app.disable('x-powered-by');
 if (!IS_PRODUCTION) {
   app.use('/media', express.static(path.join(__dirname, 'public', 'media')));
 }
+// OS9 theme assets (css/js/fonts). Mounted after /media so its config wins there.
+app.use(express.static(path.join(__dirname, 'public'), { maxAge: '7d' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
@@ -113,7 +115,7 @@ app.use((req, res, next) => {
     "frame-ancestors 'none'",
     "form-action 'self'",
     "object-src 'none'",
-    "script-src 'none'",
+    "script-src 'self'",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com data:",
     "img-src 'self' https: data:",
