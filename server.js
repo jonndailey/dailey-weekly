@@ -664,6 +664,20 @@ function getCategoryColor(slug) {
   return categoryColors[slug] || { bg: '#f3f4f6', text: '#475467', border: '#d0d5dd' };
 }
 
+function renderBombDialog(title, message, code) {
+  return `
+    <section class="alert" aria-label="Error" style="max-width:520px;margin:40px auto;">
+      <div class="bomb" aria-hidden="true"></div>
+      <div style="flex:1">
+        <h3>${escapeHtml(title)}</h3>
+        <p>&ldquo;${escapeHtml(message)}&rdquo;<br>Error code: ${escapeHtml(String(code))}</p>
+        <div class="btnrow" style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px;">
+          <a class="readmore default" href="/">Restart</a>
+        </div>
+      </div>
+    </section>`;
+}
+
 function renderCategoryPill(name, slug) {
   if (!name) return '';
   const color = getCategoryColor(slug);
@@ -821,7 +835,7 @@ app.get('/media/:id/:filename?', async (req, res) => {
     if (assets.length === 0) {
       return res
         .status(404)
-        .send(layout('Not Found', '<main><div class="container"><div class="empty-state"><p>Media asset not found.</p></div></div></main>'));
+        .send(layout('Not Found', renderBombDialog('Sorry, a system error occurred.', 'That media asset could not be found.', 404)));
     }
 
     if (!hasStorageConfig()) {
@@ -958,31 +972,29 @@ app.get('/post/:slug', async (req, res) => {
         .send(
           layout(
             'Not Found',
-            '<main><div class="container"><div class="empty-state"><p>Post not found.</p></div></div></main>'
+            renderBombDialog('Sorry, a system error occurred.', 'That post could not be found.', 404)
           )
         );
     }
 
     const post = posts[0];
     const tags = parseTags(post.tags);
+    const metaBits = [post.category_name && escapeHtml(post.category_name), escapeHtml(formatDate(post.published_at || post.created_at)), escapeHtml(readingTime(post.content))].filter(Boolean).join(' &middot; ');
     const html = `
-      <main>
-        <div class="container--narrow post-shell">
-          <header class="post-header">
-            ${renderCategoryPill(post.category_name, post.category_slug)}
-            <h1>${escapeHtml(post.title)}</h1>
-            ${renderMeta(post)}
-            ${post.excerpt ? `<p class="post-subtitle">${escapeHtml(post.excerpt)}</p>` : ''}
-          </header>
-          <article class="post-content">
+      <section class="window">
+        <div class="titlebar"><div class="box" aria-hidden="true"></div><div class="ttl"><span>${escapeHtml(post.title)}</span></div><div class="box collapse" aria-hidden="true"></div></div>
+        <div class="liststrip">${metaBits}</div>
+        <div class="win-body">
+          <article class="doc">
+            ${post.excerpt ? `<p style="font-weight:bold;font-size:15px;margin:0 0 14px;">${escapeHtml(post.excerpt)}</p>` : ''}
             ${renderMarkdown(post.content)}
+            <div style="margin-top:22px;padding-top:14px;border-top:1px solid #ccc;">
+              ${renderTagList(tags)}
+              <a href="/" class="readmore">&larr; Back to all posts</a>
+            </div>
           </article>
-          <div class="post-footer">
-            ${renderTagList(tags)}
-            <a href="/" class="back-link">Back to all posts</a>
-          </div>
         </div>
-      </main>`;
+      </section>`;
 
     res.send(layout(post.title, html, { description: post.excerpt || SITE_DESCRIPTION, ogType: 'article' }));
   } catch (err) {
@@ -1550,6 +1562,15 @@ function validateSecurityConfig() {
 
   console.warn(`[security] ${message} Development fallback mode is enabled; set both before deploying.`);
 }
+
+app.use((req, res) => {
+  res.status(404).send(layout('Not Found', renderBombDialog('Sorry, a system error occurred.', 'That page could not be found.', 404)));
+});
+
+app.use((err, req, res, _next) => {
+  console.error(err);
+  res.status(500).send(layout('Error', renderBombDialog('Sorry, a system error occurred.', 'Something went wrong on our end.', 500)));
+});
 
 async function start() {
   validateSecurityConfig();
