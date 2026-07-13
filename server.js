@@ -782,7 +782,7 @@ function layout(title, content, options = {}) {
   const { description = '', ogType = 'website', ogImage = '', isAdmin = false } = options;
   const safeTitle = escapeHtml(title);
   const metaDescription = escapeHtml(description || title);
-  const publicLogo = `<span class="logo-mark"></span>${escapeHtml(SITE_NAME)}`;
+  const publicLogo = `<img src="/logo.png" alt="${escapeHtml(SITE_NAME)}" class="logo">`;
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -803,7 +803,7 @@ ${isAdmin ? '' : '<script src="/os9.js" defer></script>'}
 <body>
   <div class="menubar" role="banner">
     <div class="mark" aria-hidden="true"></div>
-    <a href="${isAdmin ? '/admin' : '/'}" class="item title">${isAdmin ? 'Blog Admin' : escapeHtml(SITE_NAME)}</a>
+    <a href="${isAdmin ? '/admin' : '/'}" class="item title">${isAdmin ? 'Blog Admin' : publicLogo}</a>
     ${isAdmin ? `
       <a class="item" href="/admin">Posts</a>
       <a class="item" href="/admin/categories">Categories</a>

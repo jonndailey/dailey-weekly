@@ -340,7 +340,7 @@
   background: #f0f0f0; border: 1px solid #ccc; padding: 1px 5px; margin: 2px 4px 2px 0; word-break: break-all; }
 .meta-row { display: flex; align-items: center; gap: 6px; font-size: 10.5px; color: #444; margin: 4px 0 12px; }
 .meta-row .dot { width: 3px; height: 3px; border-radius: 50%; background: #888; }
-.logo-mark { display: none; }
+.menubar .item.title .logo { height: 18px; width: auto; display: block; margin: 0; }
 /* image rows from markdown */
 .image-row { display: flex; gap: 12px; flex-wrap: wrap; }
 .image-row .embed-block { flex: 1; min-width: 200px; }
