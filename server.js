@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const mysql = require('mysql2/promise');
 const multer = require('multer');
 const path = require('path');
@@ -106,8 +107,18 @@ if (!IS_PRODUCTION) {
 }
 // OS9 theme assets (css/js/fonts). Mounted after /media so its config wins there.
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: '7d' }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: false, limit: '1mb' }));
+
+const limiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, slow down.' },
+  skip: (req) => req.path.startsWith('/admin') || req.path === '/health',
+});
+app.use(limiter);
 app.use((req, res, next) => {
   const csp = [
     "default-src 'self'",
