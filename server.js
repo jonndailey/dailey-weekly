@@ -782,7 +782,7 @@ function layout(title, content, options = {}) {
   const { description = '', ogType = 'website', ogImage = '', isAdmin = false } = options;
   const safeTitle = escapeHtml(title);
   const metaDescription = escapeHtml(description || title);
-  const publicLogo = `<img src="/logo.png" alt="${escapeHtml(SITE_NAME)}" class="logo">`;
+  const publicLogo = `<img src="/logo.png" alt="${escapeHtml(SITE_NAME)}" class="logo" height="18">`;
 
   return `<!DOCTYPE html>
 <html lang="en">
