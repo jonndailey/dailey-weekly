@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS page_views (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  path VARCHAR(500) NOT NULL,
+  ip_hash CHAR(64) NOT NULL,
+  user_agent VARCHAR(500) DEFAULT NULL,
+  referer VARCHAR(1000) DEFAULT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_created_at (created_at),
+  INDEX idx_path (path(255))
+);

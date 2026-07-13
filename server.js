@@ -139,6 +139,18 @@ app.use((req, res, next) => {
   next();
 });
 
+// Page view tracking — logs every public page view (homepage, posts, RSS, etc.)
+// Skips admin, health, and media routes. IPs are hashed for privacy.
+app.use((req, res, next) => {
+  const pagePath = req.path;
+  if (pagePath.startsWith('/admin') || pagePath.startsWith('/health') || pagePath.startsWith('/media')) {
+    return next();
+  }
+
+  trackPageView(req, pagePath).catch(() => {});
+  next();
+});
+
 function escapeHtml(value) {
   return String(value ?? '')
     .replace(/&/g, '&amp;')
@@ -570,6 +582,29 @@ function clearAdminSessionCookie(res) {
 function getRequestIp(req) {
   const forwarded = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim();
   return forwarded || req.socket.remoteAddress || 'unknown';
+}
+
+function getIpHash(req) {
+  const ip = getRequestIp(req);
+  const salt = getSessionSecret();
+  return crypto.createHash('sha256').update(`${ip}:${salt}`).digest('hex');
+}
+
+async function trackPageView(req, pagePath) {
+  try {
+    const db = await getPool();
+    await db.execute(
+      'INSERT INTO page_views (path, ip_hash, user_agent, referer) VALUES (?, ?, ?, ?)',
+      [
+        pagePath,
+        getIpHash(req),
+        String(req.headers['user-agent'] || '').slice(0, 500),
+        String(req.headers['referer'] || '').slice(0, 1000),
+      ]
+    );
+  } catch (err) {
+    console.error('[tracking] Failed to log page view:', err.message);
+  }
 }
 
 function pruneLoginAttempts(now = Date.now()) {
@@ -1102,6 +1137,26 @@ app.get('/admin/logout', (_req, res) => {
 app.get('/admin', adminAuth, async (req, res) => {
   try {
     const db = await getPool();
+
+    // Page view stats
+    const [pageViewStats] = await db.execute(`
+      SELECT
+        COUNT(*) AS total,
+        SUM(IF(DATE(created_at) = CURDATE(), 1, 0)) AS today,
+        SUM(IF(YEARWEEK(created_at) = YEARWEEK(CURDATE()), 1, 0)) AS this_week,
+        COUNT(DISTINCT DATE(created_at)) AS days_tracked
+      FROM page_views
+    `);
+    const pv = pageViewStats[0] || { total: 0, today: 0, this_week: 0, days_tracked: 0 };
+
+    const [topPages] = await db.execute(`
+      SELECT path, COUNT(*) AS views
+      FROM page_views
+      GROUP BY path
+      ORDER BY views DESC
+      LIMIT 5
+    `);
+
     const [posts] = await db.execute(
       `SELECT p.*, c.name as category_name FROM posts p LEFT JOIN categories c ON p.category_id = c.id ORDER BY p.created_at DESC`
     );
@@ -1127,12 +1182,34 @@ app.get('/admin', adminAuth, async (req, res) => {
       })
       .join('');
 
+    const topPagesHtml = topPages.length
+      ? topPages.map((p) => `<tr><td>${escapeHtml(p.path)}</td><td style="text-align:right;">${Number(p.views).toLocaleString()}</td></tr>`).join('')
+      : '<tr><td colspan="2" style="text-align:center;padding:18px;color:#667085;">No page views yet.</td></tr>';
+
     res.send(
       layout(
         'Posts',
         `
         ${success}
         ${error}
+        <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px;">
+          <section class="window" style="flex:1;min-width:280px;">
+            <div class="titlebar"><div class="box" aria-hidden="true"></div><div class="ttl"><span>Page Views</span></div><div class="box collapse" aria-hidden="true"></div></div>
+            <div class="win-body">
+              <div class="stat-pills">
+                <span class="stat-pill">${Number(pv.total).toLocaleString()} total</span>
+                <span class="stat-pill">${Number(pv.today).toLocaleString()} today</span>
+                <span class="stat-pill">${Number(pv.this_week).toLocaleString()} this week</span>
+                <span class="stat-pill">${Number(pv.days_tracked)} day${pv.days_tracked === 1 ? '' : 's'}</span>
+              </div>
+              ${topPages.length ? `
+              <table class="admin-table" style="margin-top:8px;">
+                <thead><tr><th>Page</th><th>Views</th></tr></thead>
+                <tbody>${topPagesHtml}</tbody>
+              </table>` : ''}
+            </div>
+          </section>
+        </div>
         <section class="window">
           <div class="titlebar"><div class="box" aria-hidden="true"></div><div class="ttl"><span>Posts</span></div><div class="box collapse" aria-hidden="true"></div></div>
           <div class="toolbar"><a href="/admin/posts/new" class="btn">New Post</a><a href="/admin/categories" class="btn">Categories</a><a href="/admin/media" class="btn">Media</a></div>
