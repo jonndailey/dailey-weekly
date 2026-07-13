@@ -743,7 +743,7 @@ function layout(title, content, options = {}) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${safeTitle} — ${escapeHtml(SITE_NAME)}</title>
+  <title>${safeTitle} · ${escapeHtml(SITE_NAME)}</title>
   <meta name="description" content="${metaDescription}">
   <meta property="og:title" content="${safeTitle}">
   <meta property="og:description" content="${metaDescription}">
@@ -1113,7 +1113,7 @@ app.get('/admin', adminAuth, async (req, res) => {
         const date = formatDate(post.created_at);
         return `<tr>
           <td><a href="/admin/posts/${post.id}/edit">${escapeHtml(post.title)}</a></td>
-          <td>${escapeHtml(post.category_name || '—')}</td>
+          <td>${escapeHtml(post.category_name || '-')}</td>
           <td>${post.published ? '<span class="chip published">Published</span>' : '<span class="chip draft">Draft</span>'}</td>
           <td>${escapeHtml(date)}</td>
           <td class="actions">
@@ -1502,7 +1502,7 @@ function postForm({ catOptions, action, csrfToken, post, tags, isEdit }) {
           </div>
           <div class="field-row">
             <label>Category</label>
-            <select class="os-select" name="category_id"><option value="">— None —</option>${catOptions}</select>
+            <select class="os-select" name="category_id"><option value="">None</option>${catOptions}</select>
           </div>
           <div class="field-row">
             <label>Tags (comma-separated)</label>
