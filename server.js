@@ -125,7 +125,7 @@ app.use((req, res, next) => {
     "base-uri 'self'",
     // Allow the Dailey OS dashboard to embed a live preview of this site;
     // everyone else is still blocked from framing it.
-    "frame-ancestors 'self' https://os.dailey.cloud",
+    "frame-ancestors 'self' https://os.dailey.cloud http://localhost:5190",
     "form-action 'self'",
     "object-src 'none'",
     "script-src 'self'",
