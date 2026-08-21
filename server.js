@@ -123,7 +123,9 @@ app.use((req, res, next) => {
   const csp = [
     "default-src 'self'",
     "base-uri 'self'",
-    "frame-ancestors 'none'",
+    // Allow the Dailey OS dashboard to embed a live preview of this site;
+    // everyone else is still blocked from framing it.
+    "frame-ancestors 'self' https://os.dailey.cloud",
     "form-action 'self'",
     "object-src 'none'",
     "script-src 'self'",
@@ -146,7 +148,8 @@ app.use((req, res, next) => {
   res.setHeader('Permissions-Policy', 'accelerometer=(), camera=(), geolocation=(), gyroscope=(), microphone=(), payment=(), usb=()');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
+  // No X-Frame-Options: it cannot express an allow-list, and every current
+  // browser honors the CSP frame-ancestors directive above instead.
   next();
 });
 
