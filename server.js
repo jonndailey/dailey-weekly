@@ -110,6 +110,13 @@ app.use(express.static(path.join(__dirname, 'public'), { maxAge: '7d' }));
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: false, limit: '1mb' }));
 
+// Behind the DOS ingress (nginx-ingress terminates TLS and sets X-Forwarded-For).
+// Trust exactly that one hop so the rate limiter keys on the real client IP.
+// A numeric hop count is deliberate: express-rate-limit v8 rejects `true` as
+// permissive (ERR_ERL_PERMISSIVE_TRUST_PROXY), since it would let a client spoof
+// X-Forwarded-For to bypass the limiter.
+app.set('trust proxy', 1);
+
 const limiter = rateLimit({
   windowMs: 60 * 1000,
   max: 60,
