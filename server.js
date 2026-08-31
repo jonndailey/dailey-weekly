@@ -161,7 +161,11 @@ app.use((req, res, next) => {
     return next();
   }
 
-  trackPageView(req, pagePath).catch(() => {});
+  // trackPageView logs its own DB failures internally; this catch only sees a
+  // rejection that escapes that guard — log it too, never swallow silently.
+  trackPageView(req, pagePath).catch((err) => {
+    console.error('[page-view] tracking rejected:', err && err.message ? err.message : err);
+  });
   next();
 });
 
