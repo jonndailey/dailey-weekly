@@ -132,7 +132,7 @@ app.use((req, res, next) => {
     "base-uri 'self'",
     // Allow the Dailey OS dashboard to embed a live preview of this site;
     // everyone else is still blocked from framing it.
-    "frame-ancestors 'self' https://os.dailey.cloud",
+    "frame-ancestors 'self' https://os.dailey.cloud http://localhost:5190",
     "form-action 'self'",
     "object-src 'none'",
     "script-src 'self'",
@@ -168,7 +168,11 @@ app.use((req, res, next) => {
     return next();
   }
 
-  trackPageView(req, pagePath).catch(() => {});
+  // trackPageView logs its own DB failures internally; this catch only sees a
+  // rejection that escapes that guard — log it too, never swallow silently.
+  trackPageView(req, pagePath).catch((err) => {
+    console.error('[page-view] tracking rejected:', err && err.message ? err.message : err);
+  });
   next();
 });
 
