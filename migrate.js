@@ -11,7 +11,10 @@ async function migrate() {
   }
 
   console.log('[migrate] Connecting to database...');
-  const connection = await mysql.createConnection(dbUrl);
+  // multipleStatements lets the SERVER parse each migration file, replacing
+  // the old client-side split(';') that broke on semicolons inside string
+  // literals. Scoped to this dedicated, short-lived migration connection.
+  const connection = await mysql.createConnection({ uri: dbUrl, multipleStatements: true });
 
   await connection.execute(`
     CREATE TABLE IF NOT EXISTS _migrations (
@@ -45,9 +48,10 @@ async function migrate() {
     console.log(`[migrate] Running: ${file}`);
     const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
 
-    const statements = sql.split(';').map(s => s.trim()).filter(s => s.length > 0);
-    for (const stmt of statements) {
-      await connection.execute(stmt);
+    // query(), not execute(): prepared statements can't run multi-statement
+    // batches. The server's real SQL parser handles quoted semicolons.
+    if (sql.trim().length > 0) {
+      await connection.query(sql);
     }
 
     await connection.execute('INSERT INTO _migrations (name) VALUES (?)', [file]);
