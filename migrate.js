@@ -14,7 +14,24 @@ async function migrate() {
   // multipleStatements lets the SERVER parse each migration file, replacing
   // the old client-side split(';') that broke on semicolons inside string
   // literals. Scoped to this dedicated, short-lived migration connection.
-  const connection = await mysql.createConnection({ uri: dbUrl, multipleStatements: true });
+  // Retry with exponential backoff: on cold start the DB may be a moment behind
+  // the app, so a transient connect failure retries rather than crash-looping
+  // the pod. 5 attempts over ~1+2+4+8s before giving up.
+  let connection;
+  for (let attempt = 1; ; attempt += 1) {
+    try {
+      connection = await mysql.createConnection({ uri: dbUrl, multipleStatements: true });
+      break;
+    } catch (err) {
+      if (attempt >= 5) {
+        console.error(`[migrate] Could not connect after ${attempt} attempts:`, err.message);
+        throw err;
+      }
+      const delayMs = 1000 * Math.pow(2, attempt - 1);
+      console.warn(`[migrate] Connect attempt ${attempt} failed (${err.message}); retrying in ${delayMs}ms`);
+      await new Promise((r) => setTimeout(r, delayMs));
+    }
+  }
 
   await connection.execute(`
     CREATE TABLE IF NOT EXISTS _migrations (
