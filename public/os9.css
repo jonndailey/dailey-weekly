@@ -99,7 +99,7 @@
   .doc { background: var(--paper); border: 1px solid #777; box-shadow: inset 1px 1px 0 #bbb; padding: 22px 26px; }
   .doc h1, .doc h2 { font-family: var(--chicago); font-weight: bold; letter-spacing: -0.01em; text-wrap: balance; margin: 0 0 6px; }
   .doc h1 { font-size: 24px; }
-  .doc p { line-height: 1.65; max-width: 62ch; margin: 10px 0; }
+  .doc p { line-height: 1.65; margin: 10px 0; }
   .meta { font-size: 10.5px; color: #444; margin-bottom: 12px; }
   .meta b { color: #000; }
   a { color: var(--link); }
